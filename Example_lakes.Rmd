@@ -1,0 +1,160 @@
+---
+title: "extRatum package example"
+author: "Nikos Patias"
+date: "12/12/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# This notebook provides an example of `extRatum` package
+
+This is a notebook that demonstrates the use of `extRatum` package, using OpenStreetMap data.
+`extRatum` package can be used to summarise the presence of geospatial features in larger geographic areas. It does so by calculating the area covered by a geospatial  feature (i.e. buildings, parks, lakes, etc.). The geospatial features can be of all types of geospatial data (i.e. point, polygons or lines).
+
+In this example, we focus on natural environment characteristics.
+
+We make use of openly available geospatial data to calculate the area covered by water bodies in each National Park in England.
+
+```{r}
+#devtools::install("C:/Users/User/Desktop/extRatum")
+library(extRatum)
+library(sf)
+library(raster)
+library(dplyr)
+library(tmap)
+```
+
+
+
+## Read data
+
+First, we read in the boundaries of Great Britain that will help with plotting the results using `raster` package . 
+
+```{r}
+
+GBR <- getData("GADM", country="GBR", level=0)
+
+```
+
+Then, we read in the boundaries of National Parks in England, published by Natural England.
+
+The data downloaded from: https://naturalengland-defra.opendata.arcgis.com/datasets/d333c7529754444894e2d7f5044d1bbf_0.
+
+
+```{r}
+# read in the national parks boundaries
+national_parks <- st_read("lake_data/National_Parks_(England)/National_Parks__England____Natural_England.shp")
+
+# plot the boundaries using a static map
+tmap_mode("plot")
+#tmap_mode("view") #use this code for creating an interactive map
+
+tm_shape(national_parks) +
+  tm_borders(col = "green") +
+  tm_shape(GBR) +
+  tm_borders()
+```
+
+
+Finally, we read in the water bodies boundaries in England published by the Environment Agency.
+
+The data downloaded from: https://data.gov.uk/dataset/33dcd836-3813-4233-a3ca-856358312415/wfd-lake-water-bodies-cycle-1
+
+
+```{r}
+# read in the water bodies boundaries
+water_bodies <- st_read("lake_data/EA_WFDLakeWaterBodiesCycle1_SHP_Full/data/WFD_Lake_Water_Bodies_Cycle_1.shp")
+
+
+# create a map
+tm_shape(water_bodies) +
+  tm_borders(col = "blue") +
+  tm_shape(GBR) +
+  tm_borders()
+```
+
+## Run the function
+
+Finally, it is time to run the  `areal_calc()` function to calculate the area covered by water bodies in each National Park in England. 
+
+Note that we have to pass a planar coordinate system, so the algorithm be able to calculate areas. In this example I use British National Grid.
+
+
+
+```{r}
+# run the function from extRatum package
+water_coverage <- areal_calc(
+  water_bodies,
+  national_parks,
+  unique_id_code = "FID",
+  crs = "epsg:27700"
+  )
+
+
+```
+
+The output of this function will be a dataframe containing:
+
+- the National Park code;
+- the total area in sqkm of each National Park;
+- the area covered by water bodies in each National Park; and
+- the ratio of water bodies area to the total National Park area (or in other words the area covered by water bodies by sqkm).
+
+
+Given that everything is measured in sqkm, the ratio represents what is the % of area covered by water bodies by sqkm. In this way, we have a relative measure that can be compared across all National Parks and is independent of their size.
+
+
+```{r}
+head(water_coverage)
+
+```
+
+## Create maps
+
+Finally, I append the data calculated to the original table of National Parks.
+
+```{r}
+# perform a join of tables 
+national_parks_v2 <- left_join(national_parks, water_coverage, by = "FID")
+
+```
+
+
+We can now create two maps.
+
+One that shows the total area covered by water bodies.
+
+```{r}
+# create a choropleth map
+tm_shape(national_parks_v2) +
+  tm_fill("AreaCovered", 
+          style = "fisher", 
+          palette = "Blues", 
+          alpha = 0.6, 
+          id="NAME", 
+          title="Area covered by water bodies (in km2)")  +
+  tm_legend(position = c("right", "top")) +
+  tm_layout(legend.outside = TRUE) +
+  tm_shape(GBR) +
+  tm_borders()
+```
+
+And a second, that shows the ratio of water bodies to the total area of each National Park.
+
+```{r}
+# create a choropleth map
+tm_shape(national_parks_v2) +
+  tm_fill("Ratio", 
+          style = "fisher", 
+          palette = "Blues", 
+          alpha = 0.6, 
+          id="NAME", 
+          title="Ratio of water bodies to total area of National Parks")  +
+  tm_legend(position = c("right", "top")) +
+  tm_layout(legend.outside = TRUE) +
+  tm_shape(GBR) +
+  tm_borders()
+```

@@ -1,1 +1,1 @@
-# extRatum_examples
+This repo provide two examples using extRatum package
