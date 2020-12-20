@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="250" src="img_Liverpool.png">
+  <img width="750" src="img_Liverpool.png">
 </p>
 
 ## `extRatum` R package examples
