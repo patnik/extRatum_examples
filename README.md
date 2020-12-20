@@ -1,5 +1,9 @@
 <p align="center">
-  <img width="250" src="images/img_Liverpool.png.png">
+  <img width="250" src="img_Liverpool.png.png">
 </p>
 
-This repo provide two examples using extRatum package
+## `extRatum` R package examples
+This repo provides two reproducible examples using `extRatum` package.
+
+- in `codes` folder you can find the notebooks with the code needed to reproduce the results;
+- in `outputs` folder you can find the resulting outputs to explore the of usability of `extRatum` package.
