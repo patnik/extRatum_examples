@@ -1,4 +1,5 @@
 <p align="center">
+  <img width="750" src="sticker.png">
   <img width="750" src="img_Liverpool.png">
 </p>
 
