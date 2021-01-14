@@ -4,14 +4,14 @@
 </p>
 
 ## `extRatum` R package examples
-This repo provides two reproducible examples using `extRatum` package.
+This repository illustrates the use of the `extRatum` package.
 
-- in `code` folder you can find the notebooks with the code needed to reproduce the results;
-- in `outputs` folder you can find the resulting outputs to explore the of usability of `extRatum` package.
+- `code` folder contains notebooks with code to reproduce our examples;
+- `outputs` folder contains the example outputs to explore the of use of `extRatum` package.
 
 ## Citation
 
-To extract `extRatum` citation, type the following code.
+To extract `extRatum` citation, type the following code:
 
 ```{r, eval = FALSE}
 citation('extRatum')

@@ -1,5 +1,5 @@
 ---
-title: "extRatum package example-Built Environment"
+title: "extRatum package example: Built Environment"
 author: "Nikos Patias"
 date: "20/12/2020"
 output: 
@@ -12,14 +12,14 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# This notebook provides an example of `extRatum` package
+# Built environment statistical indicators
 
-This is a notebook that demonstrates the use of `extRatum` package, using OpenStreetMap data.
-`extRatum` provides summary statistics of local geospatial features within a given geographic area. It does so by calculating the area covered by a target geospatial feature (i.e. buildings, parks, lakes, etc.). The geospatial features can be of any type of geospatial data, including point, polygon or line data.
+This notebook demonstrates the use of `extRatum` package drawing on *OpenStreetMap* data.
+`extRatum` provides summary statistics of local geospatial features within a given geographic area. It does so by calculating the area covered by a target geospatial feature (i.e. buildings, parks, lakes, etc.). The geospatial features can be of any geospatial data type, including point, polygon or line data.
 
 In this example, we focus on built environment characteristics.
 
-We make use of OpenStreetMap data and calculate indicators for point, polygon and line data. The reference layer is the Lower Layer Super Output Area (LSOA) boundaries for the city of Liverpool in the United Kingdom.
+We make use of OpenStreetMap data and calculate point-, polygon- and line-based data features. The reference layer is the Lower Layer Super Output Area (LSOA) boundaries for the city of Liverpool in the United Kingdom.
 
 ```{r}
 library(extRatum)
@@ -29,7 +29,7 @@ library(tmap)
 library(osmdata)
 ```
 
-## Read Liverpool LSOA boundaries
+## Read boundaries
 
 First, we read in the LSOA boundaries for Liverpool. The data downloaded from CDRC website: https://data.cdrc.ac.uk/
 
@@ -38,16 +38,16 @@ First, we read in the LSOA boundaries for Liverpool. The data downloaded from CD
 LSOAs <- st_read("layers/E08000012.shp")
 
 ```
-Because the area of interest is Liverpool, we should select the British National Grid as a planar coordinate system of reference throughout this notebook.
+Because the area of interest is in the UK, we select the British National Grid as a planar coordinate system of reference.
 
 ```{r}
 BNG = "epsg:27700"
 ```
 
 
-## Point data analysis
+## Point data metrics
 
-In this part of the notebook, we will deal with point data. 
+Here, we illustrate the use of `extRatum` with point data. 
 
 We create a simple query to download point data representing shops in Liverpool.
 ```{r}
@@ -72,13 +72,13 @@ tm_shape(LSOAs) +
 ```
 
 
-Then we calculate the number of points in each polygon using `point_calc()` function. Note that we have to pass a planar coordinate system in all our functions. Here we use British National Grid. 
+Then we calculate the number of points in each polygon using the `point_calc()` function. Note that we have to pass a planar coordinate system in all our functions. Here we are using the British National Grid. 
 The output of this function will be a dataframe containing:
 
-- the LSOA code;
-- the total area in sqm of each LSOA;
-- the number of points (i.e. shops) in each LSOA; and
-- the ratio of points to the total LSOA area (or in other words the number of points by sqm). In this way, we have a relative measure that can be compared across all LSOAs and is independent of their size.
+- LSOA codea;
+- total area in sqm of each LSOA;
+- number of points (i.e. shops) in each LSOA; and
+- ratio of points to the total LSOA area (or in other words the number of points by sqm). In this way, we have a relative measure that can be compared across all LSOAs and is independent of their geographical area.
 
 Note that we have used the argument `total_points = TRUE` which returns the total number of points without differentiating between different shop types.
 
@@ -98,7 +98,7 @@ head(Shops_total)
 
 ```
 
-In some cases though we want to know the split between different types of points. In this case, we change the `total_points = FALSE` and specify the column name that includes the classification (see `class_col`).
+In some cases, we want to know the split between different types of points. To that end, we can change the `total_points = FALSE` and specify the column name that includes the classification (see `class_col`).
 
 ```{r}
 
@@ -119,11 +119,11 @@ The output of this function will be a list of three dataframes.
 
 1. A dataframe in long format reporting: 
 
-- the LSOA code;
-- the total area in sqm of each LSOA;
-- the classification of the points within each LSOA;
-- the number of points in each class (i.e. bakery, beauty) in each LSOA; and
-- the ratio of points in each class to the total LSOA area (or in other words the number of points by sqkm).
+- LSOA codes;
+- total area in sqm of each LSOA;
+- classification of the points within each LSOA;
+- number of points in each class (i.e. bakery, beauty) in each LSOA; and
+- ratio of points in each class to the total LSOA area (or in other words the number of points by sqkm).
 
 
 ```{r}
@@ -133,8 +133,8 @@ head(Shops_class$PointsLong)
 
 2. A dataframe in wide format reporting: 
 
-- the LSOA code;
-- the number of points in each class (i.e. bakery, beauty) in each LSOA.
+- LSOA codes;
+- number of points in each class (i.e. bakery, beauty) in each LSOA.
 
 ```{r}
 head(Shops_class$PointsCountWide)
@@ -143,15 +143,15 @@ head(Shops_class$PointsCountWide)
 
 3. A dataframe in wide format reporting: 
 
-- the LSOA code;
-- the ratio of points in each class to the total LSOA area (or in other words the number of points by sqkm).
+- LSOA codes;
+- ratio of points in each class to the total LSOA area (or in other words the number of points by sqkm).
 
 ```{r}
 head(Shops_class$PointsRatioWide)
 
 ```
 
-Finally we can plot the results in a map, which shows the density of shops in the city of Liverpool at the LSOA level. 
+Finally we can map the results to show the density of shops in the city of Liverpool at the LSOA level. 
 ```{r}
 # attach the information calculate using extRatum to the LSOA boundaries
 Liv_shops_geo <- dplyr::left_join(LSOAs, Shops_total, by = "lsoa11cd")
@@ -162,9 +162,9 @@ tm_shape(Liv_shops_geo) +
 
 
 ## Polygon data analysis
-In this part, we will deal with polygon data.
+Next, we illustrate the use of `extRatum` with polygon data.
 
-We create a query to download building footprints for the city of Liverpool using OpenStreetMap data.
+We create a query to download building footprints for the city of Liverpool using *OpenStreetMap* data.
 ```{r}
 q2 <- getbb("Liverpool", limit = 100) %>%
   opq() %>%
@@ -182,7 +182,6 @@ retail_buildings <- subset(buildings$osm_polygons, building=="retail")
 ```
 
 
-
 Then, we run the function that calculates the area in sqm covered by retail buildings in each LSOA using `areal_calc()` function.
 
 ```{r}
@@ -197,10 +196,10 @@ Liv_retail <- areal_calc(
 
 The output of this function will be a dataframe containing:
 
-- the LSOA code;
-- the total area in sqm of each LSOA;
-- the area in sqm covered by the geospatial feature we have selected in each LSOA; and
-- the ratio of geospatial feature area to the total LSOA area (or in other words the area covered by the geospatial feature by sqm).
+- LSOA codes;
+- total area in sqm of each LSOA;
+- area in sqm covered by the geospatial feature we have selected in each LSOA; and
+- ratio of geospatial feature area to the total LSOA area (or in other words the area covered by the geospatial feature by sqm).
 
 Given that everything is measured in sqm, the ratio represents what is the % of area covered by retail buildings by sqm. In this way, we have a relative measure that can be compared across all LSOAs and is independent of their size.
 
@@ -211,7 +210,6 @@ Liv_retail$AreaCovered_sqkm <- Liv_retail$AreaCovered /1000000
 
 head(Liv_retail)
 ```
-
 
 Finally, we can plot the results, showing the total area covered by retail buildings in each LSOA in Liverpool.
 Note that OSM data on retail buildings are not complete for the city of Liverpool. Thus, we see too many LSOAs with missing data. 
@@ -225,7 +223,8 @@ tm_shape(Liv_retail_geo) +
 
 
 ## Line data analysis
-In this part, we will deal with line data.
+
+ow, we illustrate the use of `extRatum` with line data.
 
 We create a query to download highway lines for the city of Liverpool using OpenStreetMap data.
 
@@ -258,10 +257,10 @@ Liv_footways <- line_calc(
 
 The output of this function will be a dataframe containing:
 
-- the LSOA code;
-- the total area in sqm of each LSOA;
-- the total line length in metres by the geospatial feature we have selected in each LSOA; and
-- the ratio of geospatial feature length to the total LSOA area (or in other words the length of the geospatial feature by sqm). In this way, we have a relative measure that can be compared across all LSOAs and is independent of their size.
+- LSOA codes;
+- total area in sqm of each LSOA;
+- total line length in metres by the geospatial feature we have selected in each LSOA; and
+- ratio of geospatial feature length to the total LSOA area (or in other words the length of the geospatial feature by sqm). In this way, we have a relative measure that can be compared across all LSOAs and is independent of their size.
 
 ```{r}
 head(Liv_footways)
