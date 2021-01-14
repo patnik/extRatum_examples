@@ -12,11 +12,10 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# This notebook provides an example of `extRatum` package
+# Natural environment statistical indicators
 
-This is a notebook that demonstrates the use of `extRatum` package, using OpenStreetMap data.
-`extRatum` provides summary statistics of local geospatial features within a given geographic area. It does so by calculating the area covered by a target geospatial feature (i.e. buildings, parks, lakes, etc.). The geospatial features can be of any type of geospatial data, including point, polygon or line data.
-
+This notebook demonstrates the use of `extRatum` package drawing on *OpenStreetMap* data.
+`extRatum` provides summary statistics of local geospatial features within a given geographic area. It does so by calculating the area covered by a target geospatial feature (i.e. buildings, parks, lakes, etc.). The geospatial features can be of any geospatial data type, including point, polygon or line data.
 
 In this example, we focus on natural environment characteristics.
 
@@ -83,7 +82,7 @@ tm_shape(water_bodies) +
 
 Finally, it is time to run the  `areal_calc()` function to calculate the area covered by water bodies in each National Park in England. 
 
-Note that we have to pass a planar coordinate system, so the algorithm be able to calculate areas. In this example we use the British National Grid.
+Note that we have to pass a planar coordinate system so taht the algorithm can calculate areas. In this example we use the British National Grid.
 
 
 
@@ -101,10 +100,10 @@ water_coverage <- areal_calc(
 
 The output of this function will be a dataframe containing:
 
-- the National Park code;
-- the total area in sqm of each National Park;
-- the area in sqm covered by water bodies in each National Park; and
-- the ratio of water bodies area to the total National Park area (or in other words the area covered by water bodies by sqkm).
+- National Park code IDs;
+- total area in sqm of each National Park;
+- area in sqm covered by water bodies in each National Park; and
+- ratio of water bodies area to the total National Park area (or in other words the area covered by water bodies by sqkm).
 
 
 Given that everything is measured in sqm, the ratio represents what is the % of area covered by water bodies by sqm. In this way, we have a relative measure that can be compared across all National Parks and is independent of their size.
@@ -121,7 +120,7 @@ head(water_coverage)
 
 ## Create maps
 
-Finally, I append the data calculated to the original table of National Parks.
+Finally, we append the data calculated to the original table of National Parks.
 
 ```{r}
 # perform a join of tables 
@@ -130,9 +129,7 @@ national_parks_v2 <- left_join(national_parks, water_coverage, by = "FID")
 ```
 
 
-We can now create two maps.
-
-One that shows the total area covered by water bodies.
+We can now create two maps: a first map showing the total area covered by water bodies.
 
 ```{r}
 # create a choropleth map
@@ -151,7 +148,7 @@ tm_shape(national_parks_v2) +
 
 
 
-And a second, that shows the ratio of water bodies to the total area of each National Park.
+And a second map that shows the ratio of water bodies to the total area of each National Park.
 
 ```{r}
 # create a choropleth map
