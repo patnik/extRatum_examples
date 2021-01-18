@@ -14,7 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Natural environment statistical indicators
 
-This notebook demonstrates the use of `extRatum` package drawing on *OpenStreetMap* data.
+This notebook demonstrates the use of `extRatum` package drawing on natural environment data.
 `extRatum` provides summary statistics of local geospatial features within a given geographic area. It does so by calculating the area covered by a target geospatial feature (i.e. buildings, parks, lakes, etc.). The geospatial features can be of any geospatial data type, including point, polygon or line data.
 
 In this example, we focus on natural environment characteristics.
@@ -103,7 +103,7 @@ The output of this function will be a dataframe containing:
 - National Park code IDs;
 - total area in sqm of each National Park;
 - area in sqm covered by water bodies in each National Park; and
-- ratio of water bodies area to the total National Park area (or in other words the area covered by water bodies by sqkm).
+- ratio of water bodies area to the total National Park area (or in other words the area covered by water bodies by sqm).
 
 
 Given that everything is measured in sqm, the ratio represents what is the % of area covered by water bodies by sqm. In this way, we have a relative measure that can be compared across all National Parks and is independent of their size.

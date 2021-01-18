@@ -75,7 +75,7 @@ tm_shape(LSOAs) +
 Then we calculate the number of points in each polygon using the `point_calc()` function. Note that we have to pass a planar coordinate system in all our functions. Here we are using the British National Grid. 
 The output of this function will be a dataframe containing:
 
-- LSOA codea;
+- LSOA code;
 - total area in sqm of each LSOA;
 - number of points (i.e. shops) in each LSOA; and
 - ratio of points to the total LSOA area (or in other words the number of points by sqm). In this way, we have a relative measure that can be compared across all LSOAs and is independent of their geographical area.
@@ -123,7 +123,7 @@ The output of this function will be a list of three dataframes.
 - total area in sqm of each LSOA;
 - classification of the points within each LSOA;
 - number of points in each class (i.e. bakery, beauty) in each LSOA; and
-- ratio of points in each class to the total LSOA area (or in other words the number of points by sqkm).
+- ratio of points in each class to the total LSOA area (or in other words the number of points by sqm).
 
 
 ```{r}
@@ -144,7 +144,7 @@ head(Shops_class$PointsCountWide)
 3. A dataframe in wide format reporting: 
 
 - LSOA codes;
-- ratio of points in each class to the total LSOA area (or in other words the number of points by sqkm).
+- ratio of points in each class to the total LSOA area (or in other words the number of points by sqm).
 
 ```{r}
 head(Shops_class$PointsRatioWide)
@@ -224,7 +224,7 @@ tm_shape(Liv_retail_geo) +
 
 ## Line data analysis
 
-ow, we illustrate the use of `extRatum` with line data.
+Now, we illustrate the use of `extRatum` with line data.
 
 We create a query to download highway lines for the city of Liverpool using OpenStreetMap data.
 
